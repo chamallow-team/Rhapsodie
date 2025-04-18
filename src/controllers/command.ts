@@ -42,6 +42,10 @@ export async function handleCommand(interaction: CommandInteraction) {
   const commandName = interaction.commandName;
   const commandInfo = commands.get(commandName);
 
+  //
+  //    EXISTENCE CHECK
+  //
+
   if (!commandInfo) {
     logger.warn(`Received command ${commandName} but no handler is registered`);
     await interaction.reply({
@@ -51,17 +55,41 @@ export async function handleCommand(interaction: CommandInteraction) {
     return;
   }
 
-  // if (!checkPerms(interaction.user.id, { roles: ["admin"] })) {
-  //   logger.warn(
-  //     `User '${interaction.user.username}' tried to use a command that he doesn't have access to.`,
-  //   );
   //
-  //   await interaction.reply({
-  //     content: "You don't have the permission to use this command.",
-  //     ephemeral: true,
-  //   });
-  //   return;
-  // }
+  //    PERMISSIONS
+  //
+
+  const CommandClass = commandInfo.commandClass;
+
+  const requiredRoles = CommandClass.__guardRoles || [];
+  const requiredGroups = CommandClass.__guardGroups || [];
+  const allowedUsers = CommandClass.__guardUsers || [];
+
+  const permissionChecks = [
+    allowedUsers.length === 0 || allowedUsers.includes(interaction.user.id),
+
+    requiredRoles.length === 0 ||
+    checkPerms(interaction.user.id, { roles: requiredRoles }),
+
+    requiredGroups.length === 0 ||
+    checkPerms(interaction.user.id, { groups: requiredGroups }),
+  ];
+
+  if (!permissionChecks.every((check) => check)) {
+    logger.warn(
+      `L'utilisateur '${interaction.user.username}' a tenté d'utiliser la commande '${commandName}' sans les permissions nécessaires.`,
+    );
+
+    await interaction.reply({
+      content: "Vous n'avez pas la permission d'utiliser cette commande.",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  //
+  //    EXECUTE
+  //
 
   try {
     // Instantiate the command handler
