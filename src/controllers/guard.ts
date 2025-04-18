@@ -3,7 +3,7 @@ import { parse } from "@std/toml";
 import { getLogger } from "@logtape/logtape";
 
 // --- Types ---
-type Permissions = Record<string, boolean>;
+export type Permissions = Record<string, boolean>;
 
 interface Group {
   roles: string[];

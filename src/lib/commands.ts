@@ -1,18 +1,17 @@
 import { getLogger } from "@logtape/logtape";
 import { CommandInteraction } from "npm:discord.js@14.18.0/typings/index.d.ts";
+import { Permissions } from "../controllers/guard.ts";
 
 export const commands: Map<string, CommandInfo> = new Map();
 
 const logger = getLogger(["lib", "commands"]);
 
-// Interface for command metadata
 interface CommandInfo {
   name: string;
   description: string;
   commandClass: any;
 }
 
-// Interface that command classes should implement
 export interface CommandHandler {
   run(interaction: CommandInteraction): Promise<void>;
 }
@@ -32,16 +31,12 @@ export function Command(name: string) {
       commandClass: target,
     };
 
-    // If there's a description stored on the class (from @Description),
-    // use it now
     if (target.__commandDescription) {
       commandInfo.description = target.__commandDescription;
     }
 
-    // Update the command class
     commandInfo.commandClass = target;
 
-    // Store the command info
     commands.set(commandName, commandInfo);
 
     logger.debug(`Command registered: ${commandName}`);
@@ -56,20 +51,50 @@ export function Command(name: string) {
  */
 export function Description(description: string) {
   return function (target: any) {
-    // Find the command this class is registered for
     for (const [name, info] of commands.entries()) {
       if (info.commandClass === target) {
-        // Update the description
         info.description = description;
         logger.debug(`Description added to command ${name}: ${description}`);
         break;
       }
     }
 
-    // If the command hasn't been registered yet with @Command
-    // We'll store the description temporarily on the class
     target.__commandDescription = description;
 
+    return target;
+  };
+}
+
+interface User {
+  roles: string[];
+  groups: string[];
+  permissions: Permissions;
+}
+
+type RoleGuard = string | string[];
+type GroupGuard = string | string[];
+type UserGuard = string | string[];
+
+export function GuardRoles(roles: RoleGuard = []) {
+  const roleArray = Array.isArray(roles) ? roles : [roles];
+  return function (target: any) {
+    target.__guardRoles = roleArray;
+    return target;
+  };
+}
+
+export function GuardGroups(groups: GroupGuard = []) {
+  const groupArray = Array.isArray(groups) ? groups : [groups];
+  return function (target: any) {
+    target.__guardGroups = groupArray;
+    return target;
+  };
+}
+
+export function GuardUser(users: UserGuard = []) {
+  const userArray = Array.isArray(users) ? users : [users];
+  return function (target: any) {
+    target.__guardUsers = userArray;
     return target;
   };
 }
