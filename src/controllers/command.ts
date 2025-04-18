@@ -1,6 +1,7 @@
 import { ApplicationCommandData, Client, CommandInteraction } from "discord.js";
 import { getLogger } from "@logtape/logtape";
 import { CommandHandler, commands } from "../lib/commands.ts";
+import { checkPerms } from "./guard.ts";
 
 const logger = getLogger(["app", "commands"]);
 
@@ -49,6 +50,18 @@ export async function handleCommand(interaction: CommandInteraction) {
     });
     return;
   }
+
+  // if (!checkPerms(interaction.user.id, { roles: ["admin"] })) {
+  //   logger.warn(
+  //     `User '${interaction.user.username}' tried to use a command that he doesn't have access to.`,
+  //   );
+  //
+  //   await interaction.reply({
+  //     content: "You don't have the permission to use this command.",
+  //     ephemeral: true,
+  //   });
+  //   return;
+  // }
 
   try {
     // Instantiate the command handler

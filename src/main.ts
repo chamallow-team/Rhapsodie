@@ -6,17 +6,19 @@ import { getLogger } from "@logtape/logtape";
 // This is a simple import for the example, but in a real application
 // you might want to dynamically load all files in the commands directory
 import "./interactions/commands/hello.ts";
+import { readPermissions } from "./controllers/guard.ts";
 
 const logger = getLogger(["app", "main"]);
 
 if (import.meta.main) {
   try {
-    // Setup the logger system before anything
     await setupLogger();
+    readPermissions();
+
     logger.info("Starting bot...");
-    await run();
+    run();
   } catch (error) {
-    logger.error("Failed to start bot:", error);
+    logger.error(`Failed to start bot: ${error}`);
     Deno.exit(1);
   }
 }
