@@ -126,7 +126,6 @@ export class Player {
    * @private
    */
   private playerPaused() {
-    this.status = PlayerStatus.Paused;
     console.log("player paused");
   }
 
