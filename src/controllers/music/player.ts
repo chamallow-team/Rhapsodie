@@ -182,6 +182,36 @@ export class Player {
     this.status = PlayerStatus.Stopped;
     this.audioPlayer.stop();
   }
+
+  skip() {
+    const newMusic = this.musicInQueue.shift();
+    if (!newMusic) {
+      this.stop();
+      return;
+    }
+
+    this.playMusic(newMusic);
+  }
+
+  /**
+   * Define the volume of the resource.
+   * @param volume A floating number between 0 and 2
+   */
+  setVolume(volume: number) {
+    if (
+      !this.currentPlayingMusic || !this.currentPlayingMusic.resource.volume
+    ) return;
+
+    if (volume < 0 || volume > 2) throw new InvalidVolume(volume);
+
+    this.currentPlayingMusic.resource.volume.setVolume(volume);
+  }
+}
+
+export class InvalidVolume extends Error {
+  constructor(volume: number) {
+    super(`Invalid volume: ${volume}. Volume must be between 0 and 2.`);
+  }
 }
 
 /**

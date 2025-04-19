@@ -24,9 +24,9 @@ export class YoutubeProvider extends Provider {
       url: video.url,
       durationInSeconds: video.duration?.seconds || 0,
 
-      getStream: function () {
+      getStream: async function () {
         try {
-          const stream = ytdl(video.url, {
+          const stream = await ytdl(video.url, {
             filter: "audioonly",
             quality: "highestaudio",
             highWaterMark: 1 << 25,
