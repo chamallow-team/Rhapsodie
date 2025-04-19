@@ -6,7 +6,7 @@ export const commands: Map<string, CommandInfo> = new Map();
 
 const logger = getLogger(["lib", "commands"]);
 
-interface CommandInfo {
+export interface CommandInfo {
   name: string;
   description: string;
   commandClass: any;

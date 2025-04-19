@@ -1,7 +1,8 @@
 import { Client, Events, Interaction, InteractionType } from "discord.js";
 import { InvalidIntents, NoIntents, NoTokenFound } from "./errors/global.ts";
 import { getLogger } from "@logtape/logtape";
-import { handleCommand, registerCommands } from "./controllers/command.ts";
+import { handleCommand } from "./controllers/command.ts";
+import { registerCommands } from "./controllers/register.ts";
 
 const logger = getLogger(["app", "global"]);
 
@@ -21,7 +22,8 @@ export function run() {
   client.once(Events.ClientReady, async (c) => {
     logger.info(`Client ready! Logged in as ${c.user.tag}`);
 
-    await registerCommands(client);
+    await registerCommands(c);
+    // await registerCommands(client);
   });
 
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
