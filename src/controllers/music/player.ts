@@ -24,6 +24,7 @@ export class Player {
   private readonly audioPlayer: AudioPlayer;
   private musicInQueue: Video[] = [];
   status: PlayerStatus;
+  protected volume: number = 1.0;
   protected broadcastChannelID: string;
 
   private readonly connection: VoiceConnection | null;
@@ -110,7 +111,6 @@ export class Player {
    * @private
    */
   private playerBuffering() {
-    console.log("player buffering");
   }
 
   /**
@@ -143,6 +143,8 @@ export class Player {
 
     try {
       const resource = await video.getStream();
+      resource.volume?.setVolume(this.volume);
+
       this.currentPlayingMusic = { resource, video };
 
       this.audioPlayer.play(resource);
@@ -160,8 +162,6 @@ export class Player {
   //  ====================================================
 
   addMusic(video: Video) {
-    console.log("video", video);
-    console.log("currentPlayingMusic", this.currentPlayingMusic);
     this.musicInQueue.push(video);
     // We check if music is already playing
     if (!this.currentPlayingMusic) {
@@ -175,6 +175,7 @@ export class Player {
   }
 
   pause() {
+    this.status = PlayerStatus.Paused;
     this.audioPlayer.pause();
   }
 
@@ -198,13 +199,18 @@ export class Player {
    * @param volume A floating number between 0 and 2
    */
   setVolume(volume: number) {
+    logger.debug("Changing volume to {volume}", { volume });
     if (
       !this.currentPlayingMusic || !this.currentPlayingMusic.resource.volume
     ) return;
 
     if (volume < 0 || volume > 2) throw new InvalidVolume(volume);
 
-    this.currentPlayingMusic.resource.volume.setVolume(volume);
+    this.volume = volume;
+
+    if (this.currentPlayingMusic?.resource.volume) {
+      this.currentPlayingMusic.resource.volume.setVolume(volume);
+    }
   }
 }
 

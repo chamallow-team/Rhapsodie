@@ -39,7 +39,7 @@ export class YoutubeProvider extends Provider {
             );
           });
 
-          return createAudioResource(stream);
+          return createAudioResource(stream, { inlineVolume: true });
         } catch (error) {
           logger.error(
             "Error while creating stream from ytdl: {error}",
