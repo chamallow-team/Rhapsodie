@@ -1,12 +1,12 @@
 import { Command, CommandHandler, Description } from "../../lib/commands.ts";
 import { CommandInteraction } from "discord.js";
 
-@Command("hello")
-@Description("This is a command to say 'hello'")
-export default class HelloCommand implements CommandHandler {
+@Command("ping")
+@Description("🏓 Permet d'obtenir la latence du bot")
+export default class Ping implements CommandHandler {
   async run(interaction: CommandInteraction): Promise<void> {
     await interaction.reply({
-      content: `Hello, ${interaction.user.username}! 👋`,
+      content: `🏓 **Latence:** ${Math.round(interaction.client.ws.ping)}ms`,
       ephemeral: false,
     });
   }
