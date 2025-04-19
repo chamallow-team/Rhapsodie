@@ -1,14 +1,23 @@
 import { getLogger } from "@logtape/logtape";
-import { CommandInteraction } from "npm:discord.js@14.18.0/typings/index.d.ts";
+import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Permissions } from "../controllers/guard.ts";
 
 export const commands: Map<string, CommandInfo> = new Map();
 
 const logger = getLogger(["lib", "commands"]);
 
+export interface CommandArgumentOptions {
+  name: string;
+  description: string;
+  type: ApplicationCommandOptionType;
+  required?: boolean;
+  choices?: { name: string; value: string | number }[];
+}
+
 export interface CommandInfo {
   name: string;
   description: string;
+  arguments: CommandArgumentOptions[];
   commandClass: any;
 }
 
@@ -28,11 +37,16 @@ export function Command(name: string) {
     const commandInfo = commands.get(commandName) || {
       name: commandName,
       description: "",
+      arguments: [],
       commandClass: target,
     };
 
     if (target.__commandDescription) {
       commandInfo.description = target.__commandDescription;
+    }
+
+    if (target.__commandArguments) {
+      commandInfo.arguments = target.__commandArguments;
     }
 
     commandInfo.commandClass = target;
@@ -61,6 +75,16 @@ export function Description(description: string) {
 
     target.__commandDescription = description;
 
+    return target;
+  };
+}
+
+export function Argument(options: CommandArgumentOptions) {
+  return function (target: any) {
+    if (!target.__commandArguments) {
+      target.__commandArguments = [];
+    }
+    target.__commandArguments.push(options);
     return target;
   };
 }

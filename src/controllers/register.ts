@@ -1,6 +1,11 @@
 import { getLogger } from "@logtape/logtape";
 import { CommandInfo, commands as localCommands } from "../lib/commands.ts";
-import { ApplicationCommand, Client, GuildResolvable } from "discord.js";
+import {
+  ApplicationCommand,
+  ApplicationCommandOptionData,
+  Client,
+  GuildResolvable,
+} from "discord.js";
 
 const logger = getLogger(["app", "commands", "register"]);
 
@@ -32,6 +37,7 @@ export async function registerCommands(client: Client<true>) {
       const action = distantCommand.edit({
         name: cmdInfos.name,
         description: cmdInfos.description,
+        options: cmdInfos.arguments as ApplicationCommandOptionData[],
       }).then(() => {});
       asyncActions.push(action);
     }
@@ -55,5 +61,13 @@ function isCommandDifferent(
   local: CommandInfo,
   distant: ApplicationCommand<{ guild: GuildResolvable }>,
 ) {
-  return local.description !== distant.description;
+  let optionsDifference = local.arguments.length !== distant.options.length;
+  optionsDifference ||= local.arguments.some((arg) => {
+    const distantArg = distant.options.find((opt) => opt.name === arg.name);
+    if (!distantArg) return true;
+
+    return arg.description !== distantArg.description;
+  });
+
+  return optionsDifference || local.description !== distant.description;
 }
