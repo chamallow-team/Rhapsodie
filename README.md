@@ -21,3 +21,27 @@ deno task dev
 ```
 
 This will start the bot with hot reloading enabled.
+
+
+---
+
+
+https://discordjs.guide/voice/audio-player.html#cheat-sheet
+
+```ts
+let stream = ytdl("myurl", {
+	filter: "audioonly",
+	quality: 'highestaudio',
+	seek: 0
+});
+const player = createAudioPlayer();
+const resource = createAudioResource(stream);
+
+const connection = joinVoiceChannel({
+	channelId: vc.id,
+	guildId: vc.guild.id,
+	adapterCreator: vc.guild.voiceAdapterCreator,
+})
+player.play(resource);
+connection.subscribe(player);
+```

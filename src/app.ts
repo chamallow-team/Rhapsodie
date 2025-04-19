@@ -1,4 +1,4 @@
-import { Client, Events, Interaction, InteractionType } from "discord.js";
+import { Client, Events, Interaction } from "discord.js";
 import { InvalidIntents, NoIntents, NoTokenFound } from "./errors/global.ts";
 import { getLogger } from "@logtape/logtape";
 import { handleCommand } from "./controllers/command.ts";
@@ -27,7 +27,7 @@ export function run() {
   });
 
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
-    // We don't give a fuck about bots interactions
+    // We don't give a fuck about bot interactions
     if (interaction.user.bot) return;
 
     if (interaction.isChatInputCommand()) {

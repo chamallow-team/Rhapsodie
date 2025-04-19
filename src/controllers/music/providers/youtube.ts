@@ -1,5 +1,10 @@
 import { Provider, Video } from "../provider.ts";
+import { createAudioResource } from "@discordjs/voice";
+import { getLogger } from "@logtape/logtape";
 import yts from "yt-search";
+import ytdl from "@distube/ytdl-core";
+
+const logger = getLogger(["app", "provider", "youtube"]);
 
 export class YoutubeProvider extends Provider {
   override async querySearch(query: string): Promise<Video | null> {
@@ -17,7 +22,33 @@ export class YoutubeProvider extends Provider {
       description: video.description,
       publishedAt: video.publishedAt,
       channel: video.author.name,
-      thumbnail: video.thumbnails[0].url,
+      thumbnail: video.thumbnail,
+      url: video.url,
+      durationInSeconds: video.duration?.seconds || 0,
+
+      getStream: function () {
+        try {
+          const stream = ytdl(video.url, {
+            filter: "audioonly",
+            quality: "highestaudio",
+          });
+
+          stream.on("error", (error) => {
+            logger.error(
+              "Error while streaming data from ytdl: {error}",
+              { error },
+            );
+          });
+
+          return createAudioResource(stream);
+        } catch (error) {
+          logger.error(
+            "Error while creating stream from ytdl: {error}",
+            { error },
+          );
+          throw error;
+        }
+      },
     };
   }
 }

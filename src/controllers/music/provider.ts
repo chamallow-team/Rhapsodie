@@ -1,3 +1,5 @@
+import { AudioResource } from "@discordjs/voice";
+
 export interface Video {
   id: string;
   channel: string;
@@ -5,6 +7,13 @@ export interface Video {
   description: string;
   thumbnail: string;
   publishedAt: Date;
+  url?: string;
+  /**
+   * Duration in seconds
+   */
+  durationInSeconds: number;
+
+  getStream: () => AudioResource;
 }
 
 export abstract class Provider {
