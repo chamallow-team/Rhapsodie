@@ -13,7 +13,7 @@ export interface Video {
    */
   durationInSeconds: number;
 
-  getStream: () => AudioResource;
+  getStream: () => Promise<AudioResource>;
 }
 
 export abstract class Provider {

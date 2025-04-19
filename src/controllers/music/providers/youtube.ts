@@ -14,8 +14,6 @@ export class YoutubeProvider extends Provider {
 
     const video = results.videos[0];
 
-    console.log(video);
-
     return {
       id: video.id,
       title: video.title,
@@ -31,6 +29,7 @@ export class YoutubeProvider extends Provider {
           const stream = ytdl(video.url, {
             filter: "audioonly",
             quality: "highestaudio",
+            highWaterMark: 1 << 25,
           });
 
           stream.on("error", (error) => {

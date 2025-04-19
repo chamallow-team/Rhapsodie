@@ -6,7 +6,7 @@ import {
   Description,
 } from "../../lib/commands.ts";
 import { youtubeProvider } from "../../controllers/music/providers/youtube.ts";
-import { Player } from "../../controllers/music/player.ts";
+import { Player, player_storage } from "../../controllers/music/player.ts";
 
 @Command("play")
 @Description("🎸 Play a music")
@@ -47,11 +47,14 @@ export class PlayCommand implements CommandHandler {
       return;
     }
 
-    const player = Player.createPlayer(
-      member.voice.channel,
-      interaction.channel?.id || "923379258137649152",
-      interaction.guild.id,
-    );
+    let player = player_storage.get(interaction.guild.id);
+    if (!player) {
+      player = Player.createPlayer(
+        member.voice.channel,
+        interaction.channel?.id || "923379258137649152",
+        interaction.guild.id,
+      );
+    }
 
     player.addMusic(music);
     await interaction.editReply({
