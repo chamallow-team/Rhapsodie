@@ -7,7 +7,6 @@ export default class HelloCommand implements CommandHandler {
   async run(interaction: CommandInteraction): Promise<void> {
     await interaction.reply({
       content: `Hello, ${interaction.user.username}! 👋`,
-      ephemeral: false,
     });
   }
 }

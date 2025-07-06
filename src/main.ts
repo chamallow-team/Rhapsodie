@@ -5,11 +5,13 @@ import { getLogger } from "@logtape/logtape";
 import "./interactions/commands/hello.ts";
 import { readPermissions } from "./controllers/guard.ts";
 import loadCommands from "./controllers/loader.ts";
+import { loadConfig } from "./config.ts";
 
 const logger = getLogger(["app", "main"]);
 
 if (import.meta.main) {
   try {
+    loadConfig();
     await setupLogger();
     await loadCommands();
 

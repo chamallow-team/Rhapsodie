@@ -50,7 +50,7 @@ export async function handleCommand(interaction: CommandInteraction) {
     logger.warn(`Received command ${commandName} but no handler is registered`);
     await interaction.reply({
       content: "This command is not implemented yet.",
-      ephemeral: true,
+      flags: "Ephemeral",
     });
     return;
   }
@@ -82,7 +82,7 @@ export async function handleCommand(interaction: CommandInteraction) {
 
     await interaction.reply({
       content: "Vous n'avez pas la permission d'utiliser cette commande.",
-      ephemeral: true,
+      flags: "Ephemeral",
     });
     return;
   }
@@ -103,7 +103,7 @@ export async function handleCommand(interaction: CommandInteraction) {
     );
     await interaction.reply({
       content: "An error occurred while executing this command.",
-      ephemeral: true,
+      flags: "Ephemeral",
     }).catch(() => {});
   }
 }

@@ -7,7 +7,6 @@ export default class Ping implements CommandHandler {
   async run(interaction: CommandInteraction): Promise<void> {
     await interaction.reply({
       content: `🏓 **Latence:** ${Math.round(interaction.client.ws.ping)}ms`,
-      ephemeral: false,
     });
   }
 }

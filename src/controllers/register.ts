@@ -66,7 +66,11 @@ function isCommandDifferent(
     const distantArg = distant.options.find((opt) => opt.name === arg.name);
     if (!distantArg) return true;
 
-    return arg.description !== distantArg.description;
+    return arg.description !== distantArg.description ||
+      arg.description !== distantArg.description ||
+      arg.type !== distantArg.type ||
+      arg.choices !==
+        (distantArg?.choices as { name: string; value: string }[]);
   });
 
   return optionsDifference || local.description !== distant.description;
