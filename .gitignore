@@ -4,3 +4,4 @@
 node_modules
 
 permissions.toml
+config.toml
