@@ -132,6 +132,11 @@ export class EightBallCommand implements CommandHandler {
 
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder()
+          .setStyle(ButtonStyle.Danger)
+          .setEmoji("🗑️")
+          .setLabel("Supprimer")
+          .setCustomId("DELETE_MESSAGE"),
+        new ButtonBuilder()
           .setLabel("Voir l'image originale")
           .setStyle(ButtonStyle.Link)
           .setURL(image.url),

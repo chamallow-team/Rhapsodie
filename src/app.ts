@@ -3,6 +3,7 @@ import { InvalidIntents, NoIntents, NoTokenFound } from "./errors/global.ts";
 import { getLogger } from "@logtape/logtape";
 import { handleCommand } from "./controllers/command.ts";
 import { registerCommands } from "./controllers/register.ts";
+import { handleButton } from "./controllers/buttons.ts";
 
 const logger = getLogger(["app", "global"]);
 
@@ -32,6 +33,8 @@ export function run() {
 
     if (interaction.isChatInputCommand()) {
       await handleCommand(interaction);
+    } else if (interaction.isButton()) {
+      await handleButton(interaction);
     }
   });
 

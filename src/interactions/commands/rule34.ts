@@ -17,6 +17,7 @@ import {
 
 import {
   addToQueue,
+  getOriginalImageUrlFromPost,
   getQueueLength,
   MEDIAN_FETCH_TIME,
 } from "../../services/rule34.api.ts";
@@ -69,7 +70,8 @@ export class EightBallCommand implements CommandHandler {
         return;
       }
 
-      const imageURL = images[Math.floor(Math.random() * images.length)];
+      const thumbnail = images[Math.floor(Math.random() * images.length)];
+      const imageURL = await getOriginalImageUrlFromPost(thumbnail.postUrl);
 
       const embed = new EmbedBuilder()
         .setColor(0x242429)
@@ -86,6 +88,11 @@ export class EightBallCommand implements CommandHandler {
         .setTimestamp();
 
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
+          .setStyle(ButtonStyle.Danger)
+          .setEmoji("🗑️")
+          .setLabel("Supprimer")
+          .setCustomId("DELETE_MESSAGE"),
         new ButtonBuilder()
           .setLabel("Voir l'image originale")
           .setStyle(ButtonStyle.Link)
