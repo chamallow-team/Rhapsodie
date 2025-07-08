@@ -3,7 +3,7 @@ services:
     build:
       context: ./app
       dockerfile: ./Dockerfile
-    restart: on-failure:5
+    restart: unless-stopped
     volumes:
       - ./app:/app
       - ./app/config/config.toml:/app/config/config.toml
