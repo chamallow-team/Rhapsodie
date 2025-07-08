@@ -11,8 +11,8 @@ const logger = getLogger(["app", "main"]);
 
 if (import.meta.main) {
   try {
-    loadConfig();
     await setupLogger();
+    loadConfig();
     await loadCommands();
 
     readPermissions();

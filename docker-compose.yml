@@ -1,0 +1,12 @@
+services:
+  discord-bot:
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    restart: on-failure:5
+    volumes:
+      - ./app:/app
+      - ./config/config.toml:/app/config/config.toml
+      - ./config/permissions.toml:/app/config/permissions.toml
+    env_file:
+      - app/.env

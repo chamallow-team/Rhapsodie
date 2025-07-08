@@ -1,7 +1,8 @@
-.env
+app/.env
+app/config
 .idea
 
 node_modules
 
-permissions.toml
-config.toml
+config/permissions.toml
+config/config.toml

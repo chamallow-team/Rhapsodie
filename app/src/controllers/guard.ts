@@ -81,6 +81,7 @@ function loadConfigFile(): Record<any, any> {
   const permsPath = path.join(
     import.meta.dirname!,
     "../../",
+    "config",
     "permissions.toml",
   );
   logger.debug(`Loading permissions from: ${permsPath}`);
